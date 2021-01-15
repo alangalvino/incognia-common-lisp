@@ -24,7 +24,6 @@
                                   :basic-auth credentials
                                   :headers '(("Content-type" . "application/x-www-form-urlencoded")))))
 
-
 (defun onboarding-signups-request-body (installation-id address-line &optional app-id)
   (jonathan:to-json (list :|installation_id| installation-id :|address_line| address-line :|app_id| app-id)))
 
