@@ -1,4 +1,5 @@
 ;;;; package.lisp
 
 (defpackage #:incognia-wrapper
-  (:use #:cl))
+  (:use #:cl)
+  (:nicknames :incognia-apis))

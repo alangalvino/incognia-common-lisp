@@ -1,10 +1,12 @@
 ;;;; incognia-wrapper.asd
 
 (asdf:defsystem #:incognia-wrapper
-  :description "Describe incognia-wrapper here"
-  :author "Your Name <your.name@example.com>"
-  :license  "Specify license here"
+  :description "Incognia Common Lisp APIs Wrapper"
+  :author "alan@incognia.com"
+  :license  "MIT"
   :version "0.0.1"
   :serial t
+  :depends-on ("dexador"
+               "jonathan")
   :components ((:file "package")
                (:file "incognia-wrapper")))
