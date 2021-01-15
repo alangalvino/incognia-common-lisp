@@ -6,6 +6,13 @@
 
 (defvar *authentication-uri* (concatenate 'string *incognia-uri* "api/v1/token"))
 
+(defun parse-yaml-file ()
+  (yaml:parse (asdf:system-relative-pathname :incognia-wrapper #p"./credentials.yaml")))
+
+(defun credentials-from-yaml ()
+  (let* ((yaml-file (parse-yaml-file)))
+    (cons (gethash "client-id" yaml-file) (gethash "secret" yaml-file))))
+
 (defun get-access-token (token-response)
   (getf (jonathan:parse token-response)
         :|access_token|))
