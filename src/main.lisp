@@ -1,6 +1,8 @@
-;;;; incognia-wrapper.lisp
-
-(in-package #:incognia-wrapper)
+(defpackage incognia-wrapper
+  (:use :cl)
+  (:nicknames :incognia-apis)
+  (:exports :onboarding-signups))
+(in-package :incognia-wrapper)
 
 (defvar *incognia-uri* "https://incognia.inloco.com.br/")
 
