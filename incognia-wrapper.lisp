@@ -29,15 +29,16 @@
 
 ;; TODO: add GET method
 ;; TODO: use keyword arguments
-(defun onboarding-signups (installation-id address-line)
+(defun onboarding-signups (installation-id address-line &optional app-id)
   (let* ((token (authenticate)))
     (dexador:post *onboarding-signups-uri*
                   :verbose t
                   :headers (list
                             '("Content-Type" . "application/json")
                             (cons "Authorization" (concatenate 'string "Bearer " token)))
-                  :content (onboarding-signups-request-body installation-id address-line))))
+                  :content (onboarding-signups-request-body installation-id address-line app-id))))
 
 ;; Example
+#+nil
 (incognia-apis:onboarding-signups "installation-id"
                                    "address-line")
