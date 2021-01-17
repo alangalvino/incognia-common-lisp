@@ -2,4 +2,5 @@
 
 (defpackage #:incognia-wrapper
   (:use #:cl)
-  (:nicknames :incognia-apis))
+  (:nicknames :incognia-apis)
+  (:export :onboarding-signups))
