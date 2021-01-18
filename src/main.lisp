@@ -8,6 +8,8 @@
 
 (defvar *authentication-uri* (concatenate 'string *incognia-uri* "api/v1/token"))
 
+(defvar *auth-token* nil)
+
 (defvar *onboarding-signups-uri* (concatenate 'string *incognia-uri* "api/v2/onboarding/signups"))
 
 (defun parse-yaml-file ()
@@ -22,10 +24,13 @@
         :|access_token|))
 
 (defun authenticate (&optional credentials-arg)
-  (let* ((credentials (or credentials-arg (credentials-from-yaml))))
-    (get-access-token (dexador:post *authentication-uri*
-                                    :basic-auth credentials
-                                    :headers '(("Content-type" . "application/x-www-form-urlencoded"))))))
+  (if (not *auth-token*)
+      (setf *auth-token*
+            (let* ((credentials (or credentials-arg (credentials-from-yaml))))
+              (get-access-token (dexador:post *authentication-uri*
+                                              :basic-auth credentials
+                                              :headers '(("Content-type" . "application/x-www-form-urlencoded")))))))
+  *auth-token*)
 
 (defun onboarding-signups-request-body (installation-id address-line &optional app-id)
   (jonathan:to-json (list :|installation_id| installation-id :|address_line| address-line :|app_id| app-id)))
