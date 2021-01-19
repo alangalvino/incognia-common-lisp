@@ -14,11 +14,11 @@
 
 (defun print-hash-key-with-tab (key tab-number)
   ;; ex. for tab-number equals 1 "~%1@t~a:"
-  (format t (format nil "~~%~~~a@t~~a:" tab-number) key))
+  (format t "~%~v@t~a:" tab-number key))
 
 (defun print-hash-key-value-with-tab (key value tab-number)
   ;; ex. for tab-number equals 1 "~%1@t~a: ~a:"
-  (format t (format nil "~~%~~~a@t~~a: ~~a" tab-number) key value))
+  (format t "~%~v@t~a: ~a" tab-number key value))
 
 (defun prettyprint-hash-table (hash-table &optional (tab-number 0))
   (loop for key being the hash-keys of hash-table
