@@ -1,7 +1,7 @@
 (defpackage incognia-wrapper
   (:use :cl)
   (:nicknames :incognia-apis)
-  (:exports :onboarding-signups))
+  (:export :onboarding-signups))
 (in-package :incognia-wrapper)
 
 (defvar *incognia-uri* "https://incognia.inloco.com.br/")
@@ -23,23 +23,23 @@
   (getf (jonathan:parse token-response)
         :|access_token|))
 
+(defun revoke-auth-token ()
+  (setf *auth-token* nil))
+
 (defun authenticate (&optional credentials-arg)
-  (if (not *auth-token*)
-      (setf *auth-token*
-            (let* ((credentials (or credentials-arg (credentials-from-yaml))))
-              (get-access-token (dexador:post *authentication-uri*
-                                              :basic-auth credentials
-                                              :headers '(("Content-type" . "application/x-www-form-urlencoded")))))))
-  *auth-token*)
+  (setf *auth-token*
+        (let* ((credentials (or credentials-arg (credentials-from-yaml))))
+          (get-access-token (dexador:post *authentication-uri*
+                                          :basic-auth credentials
+                                          :headers '(("Content-type" . "application/x-www-form-urlencoded")))))))
 
 (defun onboarding-signups-request-body (installation-id address-line &optional app-id)
   (jonathan:to-json (list :|installation_id| installation-id :|address_line| address-line :|app_id| app-id)))
 
 ;; TODO: add GET method
 (defun onboarding-signups (&key installation-id address-line app-id credentials)
-  (let* ((token (authenticate credentials)))
+  (let* ((token (or *auth-token* (authenticate credentials))))
     (dexador:post *onboarding-signups-uri*
-                  :verbose t
                   :headers (list
                             '("Content-Type" . "application/json")
                             (cons "Authorization" (concatenate 'string "Bearer " token)))
