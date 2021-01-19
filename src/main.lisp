@@ -12,22 +12,18 @@
 
 (defvar *auth-token* nil)
 
-(defun print-hash-key-with-tab (key tab-number)
-  ;; ex. for tab-number equals 1 "~%1@t~a:"
-  (format t "~%~v@t~a:" tab-number key))
+(defun print-hash-key-value-with-tab (tab key &optional value (stream t))
+  ;; ex. for tab equals 1 "~%1@t~a: ~a:"
+  (format stream "~@[~%~v@t~a: ~] ~@[~a~]" tab key value))
 
-(defun print-hash-key-value-with-tab (key value tab-number)
-  ;; ex. for tab-number equals 1 "~%1@t~a: ~a:"
-  (format t "~%~v@t~a: ~a" tab-number key value))
-
-(defun prettyprint-hash-table (hash-table &optional (tab-number 0))
+(defun prettyprint-hash-table (hash-table &optional (tab 0))
   (loop for key being the hash-keys of hash-table
           using (hash-value value)
         do (if (equal (type-of value) 'hash-table)
                (progn
-                 (print-hash-key-with-tab key tab-number)
-                 (prettyprint-hash-table value (+ tab-number 1)))
-               (print-hash-key-value-with-tab key value tab-number))))
+                 (print-hash-key-value-with-tab tab key)
+                 (prettyprint-hash-table value (+ tab 1)))
+               (print-hash-key-value-with-tab tab key value))))
 
 (defun parse-yaml-file ()
   (yaml:parse (asdf:system-relative-pathname :incognia-wrapper #p"./credentials.yaml")))
