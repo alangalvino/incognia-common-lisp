@@ -8,9 +8,22 @@
 
 (defvar *authentication-uri* (concatenate 'string *incognia-uri* "api/v1/token"))
 
+(defvar *onboarding-signups-uri* (concatenate 'string *incognia-uri* "api/v2/onboarding/signups"))
+
 (defvar *auth-token* nil)
 
-(defvar *onboarding-signups-uri* (concatenate 'string *incognia-uri* "api/v2/onboarding/signups"))
+(defun print-hash-key-value-with-tab (tab key &optional value (stream t))
+  ;; ex. for tab equals 1 "~%1@t~a: ~a:"
+  (format stream "~@[~%~v@t~a: ~] ~@[~a~]" tab key value))
+
+(defun prettyprint-hash-table (hash-table &optional (tab 0))
+  (loop for key being the hash-keys of hash-table
+          using (hash-value value)
+        do (if (equal (type-of value) 'hash-table)
+               (progn
+                 (print-hash-key-value-with-tab tab key)
+                 (prettyprint-hash-table value (+ tab 1)))
+               (print-hash-key-value-with-tab tab key value))))
 
 (defun parse-yaml-file ()
   (yaml:parse (asdf:system-relative-pathname :incognia-wrapper #p"./credentials.yaml")))
@@ -31,7 +44,7 @@
         (let* ((credentials (or credentials-arg (credentials-from-yaml))))
           (get-access-token (dexador:post *authentication-uri*
                                           :basic-auth credentials
-                                          :headers '(("Content-type" . "application/x-www-form-urlencoded")))))))
+                                          :headers '(("Content-Type" . "application/x-www-form-urlencoded")))))))
 
 (defun onboarding-signups-request-body (installation-id address-line &optional app-id)
   (jonathan:to-json (list :|installation_id| installation-id :|address_line| address-line :|app_id| app-id)))
@@ -39,11 +52,12 @@
 ;; TODO: add GET method
 (defun onboarding-signups (&key installation-id address-line app-id credentials)
   (let* ((token (or *auth-token* (authenticate credentials))))
-    (dexador:post *onboarding-signups-uri*
-                  :headers (list
-                            '("Content-Type" . "application/json")
-                            (cons "Authorization" (concatenate 'string "Bearer " token)))
-                  :content (onboarding-signups-request-body installation-id address-line app-id))))
+    (prettyprint-hash-table (jonathan:parse (dexador:post *onboarding-signups-uri*
+                                                          :headers (list
+                                                                    '("Content-Type" . "application/json")
+                                                                    (cons "Authorization" (concatenate 'string "Bearer " token)))
+                                                          :content (onboarding-signups-request-body installation-id address-line app-id))
+                                            :as :hash-table))))
 
 ;; Example
 #+nil
