@@ -1,4 +1,5 @@
 credentials.yaml
+scratch.lisp
 *.abcl
 *.fasl
 *.dx32fsl

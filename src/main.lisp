@@ -49,7 +49,6 @@
 (defun onboarding-signups-request-body (installation-id address-line &optional app-id)
   (jonathan:to-json (list :|installation_id| installation-id :|address_line| address-line :|app_id| app-id)))
 
-;; TODO: add GET method
 (defun onboarding-signups (&key installation-id address-line app-id credentials)
   (let* ((token (or *auth-token* (authenticate credentials))))
     (prettyprint-hash-table (jonathan:parse (dexador:post *onboarding-signups-uri*
