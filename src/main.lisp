@@ -1,7 +1,8 @@
 (defpackage incognia-wrapper
   (:use :cl)
   (:nicknames :incognia-apis)
-  (:export :onboarding-signups))
+  (:export :authenticate
+           :onboarding-signups))
 (in-package :incognia-wrapper)
 
 (defvar *incognia-uri* "https://incognia.inloco.com.br/")
@@ -30,7 +31,7 @@
 
 (defun credentials-from-yaml ()
   (let* ((yaml-file (parse-yaml-file)))
-    (cons (gethash "client-id" yaml-file) (gethash "secret" yaml-file))))
+    (cons (gethash "client-id" yaml-file) (gethash "client-secret" yaml-file))))
 
 (defun get-access-token (token-response)
   (getf (jonathan:parse token-response)
@@ -39,26 +40,34 @@
 (defun revoke-auth-token ()
   (setf *auth-token* nil))
 
-(defun authenticate (&optional credentials-arg)
+(defun authenticate (&optional credentials-cons)
   (setf *auth-token*
-        (let* ((credentials (or credentials-arg (credentials-from-yaml))))
+        (let* ((credentials (or credentials-cons (credentials-from-yaml))))
           (get-access-token (dexador:post *authentication-uri*
                                           :basic-auth credentials
                                           :headers '(("Content-Type" . "application/x-www-form-urlencoded")))))))
 
-(defun onboarding-signups-request-body (installation-id address-line &optional app-id)
+(defun post-onboarding-signups-request-body (installation-id address-line &optional app-id)
   (jonathan:to-json (list :|installation_id| installation-id :|address_line| address-line :|app_id| app-id)))
 
-(defun onboarding-signups (&key installation-id address-line app-id credentials)
-  (let* ((token (or *auth-token* (authenticate credentials))))
-    (prettyprint-hash-table (jonathan:parse (dexador:post *onboarding-signups-uri*
-                                                          :headers (list
-                                                                    '("Content-Type" . "application/json")
-                                                                    (cons "Authorization" (concatenate 'string "Bearer " token)))
-                                                          :content (onboarding-signups-request-body installation-id address-line app-id))
-                                            :as :hash-table))))
+(defun post-onboarding-signups (&key installation-id address-line app-id)
+  (dexador:post *onboarding-signups-uri*
+                :headers (list
+                          '("Content-Type" . "application/json")
+                          (cons "Authorization" (concatenate 'string "Bearer " *auth-token*)))
+                :content (post-onboarding-signups-request-body installation-id address-line app-id)))
+
+(defun onboarding-signups (&key installation-id address-line app-id)
+  (prettyprint-hash-table
+   (jonathan:parse (post-onboarding-signups :installation-id installation-id
+                                            :address-line address-line
+                                            :app-id app-id)
+                   :as :hash-table)))
 
 ;; Example
+#+nil
+(authenticate)
+
 #+nil
 (incognia-apis:onboarding-signups :installation-id "installation-id"
                                   :address-line "address-line")

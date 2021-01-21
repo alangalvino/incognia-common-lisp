@@ -1,5 +1,5 @@
 * To-Do Tasks
+** TODO Implement a ncurses interface for incognia apis using CFFI bindings
 ** TODO Implement onboarding-signups GET method
-** TODO Implement a REPL for onboarding-signups
 ** TODO Write tests for prettyprint-hash-table
 ** TODO Write tests for parse-yaml-file
