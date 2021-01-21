@@ -1,7 +1,9 @@
 (defpackage incognia-wrapper
   (:use :cl)
   (:nicknames :incognia-apis)
-  (:export :onboarding-signups))
+  (:export :authenticate
+           :onboarding-signups
+           :prompt))
 (in-package :incognia-wrapper)
 
 (defvar *incognia-uri* "https://incognia.inloco.com.br/")
@@ -39,9 +41,9 @@
 (defun revoke-auth-token ()
   (setf *auth-token* nil))
 
-(defun authenticate (&optional credentials-arg)
+(defun authenticate (&optional client-id secret)
   (setf *auth-token*
-        (let* ((credentials (or credentials-arg (credentials-from-yaml))))
+        (let* ((credentials (or (cons client-id secret) (credentials-from-yaml))))
           (get-access-token (dexador:post *authentication-uri*
                                           :basic-auth credentials
                                           :headers '(("Content-Type" . "application/x-www-form-urlencoded")))))))
@@ -49,14 +51,13 @@
 (defun onboarding-signups-request-body (installation-id address-line &optional app-id)
   (jonathan:to-json (list :|installation_id| installation-id :|address_line| address-line :|app_id| app-id)))
 
-(defun onboarding-signups (&key installation-id address-line app-id credentials)
-  (let* ((token (or *auth-token* (authenticate credentials))))
-    (prettyprint-hash-table (jonathan:parse (dexador:post *onboarding-signups-uri*
-                                                          :headers (list
-                                                                    '("Content-Type" . "application/json")
-                                                                    (cons "Authorization" (concatenate 'string "Bearer " token)))
-                                                          :content (onboarding-signups-request-body installation-id address-line app-id))
-                                            :as :hash-table))))
+(defun onboarding-signups (&key installation-id address-line app-id)
+  (prettyprint-hash-table (jonathan:parse (dexador:post *onboarding-signups-uri*
+                                                        :headers (list
+                                                                  '("Content-Type" . "application/json")
+                                                                  (cons "Authorization" (concatenate 'string "Bearer " token)))
+                                                        :content (onboarding-signups-request-body installation-id address-line app-id))
+                                          :as :hash-table)))
 
 (defun prompt-read (prompt)
   (format *query-io* "~a: " prompt)
@@ -75,6 +76,7 @@
     (case api-index
       (1 (progn
            (format t "Okay, let's call POST /onboarding/signups~%")
+           (authenticate)
            (onboarding-signups :installation-id (prompt-read "--> installation-id")
                                :address-line (prompt-read "--> address-line")
                                :app-id (prompt-read "--> app-id"))))
