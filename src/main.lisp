@@ -58,6 +58,28 @@
                                                           :content (onboarding-signups-request-body installation-id address-line app-id))
                                             :as :hash-table))))
 
+(defun prompt-read (prompt)
+  (format *query-io* "~a: " prompt)
+  (force-output *query-io*)
+  (read-line *query-io*))
+
+(defun prompt ()
+  (format t "Pick one Incognia API to test:~%")
+  (format t "1. POST /onboarding/signups~%")
+  (format t "2. GET  /onboarding/signups*~%")
+  (format t "3. POST /authentication/transactions*~%")
+  (format t "*Not available yet~%")
+  (let* ((api-index (parse-integer
+                     (prompt-read "-->")
+                     :junk-allowed t)))
+    (case api-index
+      (1 (progn
+           (format t "Okay, let's call POST /onboarding/signups~%")
+           (onboarding-signups :installation-id (prompt-read "--> installation-id")
+                               :address-line (prompt-read "--> address-line")
+                               :app-id (prompt-read "--> app-id"))))
+      (t "Option not available."))))
+
 ;; Example
 #+nil
 (incognia-apis:onboarding-signups :installation-id "installation-id"
