@@ -2,6 +2,7 @@
   (:use :cl)
   (:nicknames :incognia-apis)
   (:export :authenticate
+           :feedbacks
            :onboarding-signups))
 (in-package :incognia-wrapper)
 
@@ -10,6 +11,8 @@
 (defvar *authentication-uri* (concatenate 'string *incognia-uri* "api/v1/token"))
 
 (defvar *onboarding-signups-uri* (concatenate 'string *incognia-uri* "api/v2/onboarding/signups"))
+
+(defvar *feedbacks-uri* (concatenate 'string *incognia-uri* "api/v2/feedbacks"))
 
 (defvar *auth-token* nil)
 
@@ -47,21 +50,27 @@
                                           :basic-auth credentials
                                           :headers '(("Content-Type" . "application/x-www-form-urlencoded")))))))
 
-(defun post-onboarding-signups-request-body (installation-id address-line &optional app-id)
-  (jonathan:to-json (list :|installation_id| installation-id :|address_line| address-line :|app_id| app-id)))
-
-(defun post-onboarding-signups (&key installation-id address-line app-id)
-  (dexador:post *onboarding-signups-uri*
+(defun feedbacks (&key timestamp event app-id (installation-id "") (account-id "") (signup-id ""))
+  (dexador:post *feedbacks-uri*
                 :headers (list
                           '("Content-Type" . "application/json")
                           (cons "Authorization" (concatenate 'string "Bearer " *auth-token*)))
-                :content (post-onboarding-signups-request-body installation-id address-line app-id)))
+                :content (jonathan:to-json (list :|timestamp| timestamp
+                                                 :|event| event
+                                                 :|app_id| app-id
+                                                 :|installation_id| installation-id
+                                                 :|account_id| account-id
+                                                 :|signup_id| signup-id))))
 
 (defun onboarding-signups (&key installation-id address-line app-id)
   (prettyprint-hash-table
-   (jonathan:parse (post-onboarding-signups :installation-id installation-id
-                                            :address-line address-line
-                                            :app-id app-id)
+   (jonathan:parse (dexador:post *onboarding-signups-uri*
+                                 :headers (list
+                                           '("Content-Type" . "application/json")
+                                           (cons "Authorization" (concatenate 'string "Bearer " *auth-token*)))
+                                 :content (jonathan:to-json (list :|installation_id| installation-id
+                                                                  :|address_line| address-line
+                                                                  :|app_id| app-id)))
                    :as :hash-table)))
 
 ;; Example

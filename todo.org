@@ -1,4 +1,5 @@
 * To-Do Tasks
+** DONE Implement call to feedbacks API
 ** TODO Implement a ncurses interface for incognia apis using CFFI bindings
 ** TODO Implement onboarding-signups GET method
 ** TODO Write tests for prettyprint-hash-table
