@@ -1,6 +1,6 @@
 * To-Do Tasks
+** DONE Refactor config method (load credentials)
+** DONE Refactor util methods
 ** DONE Implement call to feedbacks API
-** TODO Implement a ncurses interface for incognia apis using CFFI bindings
-** TODO Implement onboarding-signups GET method
 ** TODO Write tests for prettyprint-hash-table
 ** TODO Write tests for parse-yaml-file

@@ -7,7 +7,9 @@
                :cl-yaml)
   :components ((:module "src"
                 :components
-                ((:file "main"))))
+                ((:file "util")
+                 (:file "config")
+                 (:file "main"))))
   :description "Common Lisp Incognia APIs Wrapper"
   :in-order-to ((test-op (test-op "incognia-wrapper/tests"))))
 
