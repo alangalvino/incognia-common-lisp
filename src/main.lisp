@@ -1,15 +1,17 @@
-o(defpackage incognia-wrapper
+(defpackage incognia-wrapper
   (:use :cl)
   (:nicknames :incognia-apis)
   (:export :authenticate
            :feedbacks
-           :onboarding-signups))
+           :onboarding-signups
+           :transactions))
 (in-package :incognia-wrapper)
 
 ;; Incognia APIs URIs
 (defvar *incognia-uri* "https://incognia.inloco.com.br/")
 (defvar *authentication-uri* (concatenate 'string *incognia-uri* "api/v1/token"))
 (defvar *onboarding-signups-uri* (concatenate 'string *incognia-uri* "api/v2/onboarding/signups"))
+(defvar *transactions-uri* (concatenate 'string *incognia-uri* "api/v2/authentication/transactions"))
 (defvar *feedbacks-uri* (concatenate 'string *incognia-uri* "api/v2/feedbacks"))
 
 (defvar *auth-token* nil)
@@ -46,6 +48,17 @@ o(defpackage incognia-wrapper
                           (cons "Authorization" (concatenate 'string "Bearer " *auth-token*)))
                 :content (jonathan:to-json (list :|installation_id| installation-id
                                                  :|address_line| address-line
+                                                 :|app_id| app-id))))
+
+
+(defun transactions (&key installation-id account-id type app-id)
+  (dexador:post *transactions-uri*
+                :headers (list
+                          '("Content-Type" . "application/json")
+                          (cons "Authorization" (concatenate 'string "Bearer " *auth-token*)))
+                :content (jonathan:to-json (list :|installation_id| installation-id
+                                                 :|account_id| account-id
+                                                 :|type| type
                                                  :|app_id| app-id))))
 
 ;; Example
