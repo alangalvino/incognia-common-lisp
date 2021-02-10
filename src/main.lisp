@@ -22,6 +22,9 @@
 (defun parse-access-token (token-response)
   (getf (jonathan:parse token-response) :|access_token|))
 
+(defun to-json (plist)
+  (jonathan:to-json (incognia-apis.util:plist-remove-null-values plist)))
+
 (defun authenticate (&optional credentials-cons)
   (setf *auth-token*
         (let* ((credentials (or credentials-cons (incognia-apis.config:load-credentials-from-yaml))))
@@ -29,26 +32,26 @@
                                             :basic-auth credentials
                                             :headers '(("Content-Type" . "application/x-www-form-urlencoded")))))))
 
-(defun feedbacks (&key timestamp event app-id (installation-id "") (account-id "") (signup-id ""))
+(defun feedbacks (&key timestamp event app-id installation-id account-id signup-id)
   (dexador:post *feedbacks-uri*
                 :headers (list
                           '("Content-Type" . "application/json")
                           (cons "Authorization" (concatenate 'string "Bearer " *auth-token*)))
-                :content (jonathan:to-json (list :|timestamp| timestamp
-                                                 :|event| event
-                                                 :|app_id| app-id
-                                                 :|installation_id| installation-id
-                                                 :|account_id| account-id
-                                                 :|signup_id| signup-id))))
+                :content (to-json (list :|timestamp| timestamp
+                                        :|event| event
+                                        :|app_id| app-id
+                                        :|installation_id| installation-id
+                                        :|account_id| account-id
+                                        :|signup_id| signup-id))))
 
 (defun signups (&key installation-id address-line app-id)
   (dexador:post *signups-uri*
                 :headers (list
                           '("Content-Type" . "application/json")
                           (cons "Authorization" (concatenate 'string "Bearer " *auth-token*)))
-                :content (jonathan:to-json (list :|installation_id| installation-id
-                                                 :|address_line| address-line
-                                                 :|app_id| app-id))))
+                :content (to-json (list :|installation_id| installation-id
+                                        :|address_line| address-line
+                                        :|app_id| app-id))))
 
 
 (defun transactions (&key installation-id account-id type app-id)
@@ -56,10 +59,10 @@
                 :headers (list
                           '("Content-Type" . "application/json")
                           (cons "Authorization" (concatenate 'string "Bearer " *auth-token*)))
-                :content (jonathan:to-json (list :|installation_id| installation-id
-                                                 :|account_id| account-id
-                                                 :|type| type
-                                                 :|app_id| app-id))))
+                :content (to-json (list :|installation_id| installation-id
+                                        :|account_id| account-id
+                                        :|type| type
+                                        :|app_id| app-id))))
 
 ;; Example
 #+nil
