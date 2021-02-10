@@ -1,15 +1,17 @@
-o(defpackage incognia-wrapper
+(defpackage incognia-wrapper
   (:use :cl)
   (:nicknames :incognia-apis)
   (:export :authenticate
            :feedbacks
-           :onboarding-signups))
+           :signups
+           :transactions))
 (in-package :incognia-wrapper)
 
 ;; Incognia APIs URIs
 (defvar *incognia-uri* "https://incognia.inloco.com.br/")
 (defvar *authentication-uri* (concatenate 'string *incognia-uri* "api/v1/token"))
-(defvar *onboarding-signups-uri* (concatenate 'string *incognia-uri* "api/v2/onboarding/signups"))
+(defvar *signups-uri* (concatenate 'string *incognia-uri* "api/v2/onboarding/signups"))
+(defvar *transactions-uri* (concatenate 'string *incognia-uri* "api/v2/authentication/transactions"))
 (defvar *feedbacks-uri* (concatenate 'string *incognia-uri* "api/v2/feedbacks"))
 
 (defvar *auth-token* nil)
@@ -39,8 +41,8 @@ o(defpackage incognia-wrapper
                                                  :|account_id| account-id
                                                  :|signup_id| signup-id))))
 
-(defun onboarding-signups (&key installation-id address-line app-id)
-  (dexador:post *onboarding-signups-uri*
+(defun signups (&key installation-id address-line app-id)
+  (dexador:post *signups-uri*
                 :headers (list
                           '("Content-Type" . "application/json")
                           (cons "Authorization" (concatenate 'string "Bearer " *auth-token*)))
@@ -48,10 +50,21 @@ o(defpackage incognia-wrapper
                                                  :|address_line| address-line
                                                  :|app_id| app-id))))
 
+
+(defun transactions (&key installation-id account-id type app-id)
+  (dexador:post *transactions-uri*
+                :headers (list
+                          '("Content-Type" . "application/json")
+                          (cons "Authorization" (concatenate 'string "Bearer " *auth-token*)))
+                :content (jonathan:to-json (list :|installation_id| installation-id
+                                                 :|account_id| account-id
+                                                 :|type| type
+                                                 :|app_id| app-id))))
+
 ;; Example
 #+nil
 (authenticate)
 
 #+nil
-(incognia-apis:onboarding-signups :installation-id "installation-id"
+(incognia-apis:signups :installation-id "installation-id"
                                   :address-line "address-line")
