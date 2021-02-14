@@ -16,10 +16,15 @@
 (defsystem "incognia-wrapper/tests"
   :author "alan alvino"
   :license "MIT"
-  :depends-on ("incognia-wrapper"
-               "rove")
+  :depends-on (:dexador
+               :jonathan
+               :cl-yaml
+               :rove
+               :incognia-wrapper)
   :components ((:module "tests"
                 :components
-                ((:file "main"))))
+                ((:file "util")
+                 (:file "config")
+                 (:file "main"))))
   :description "Test system for incognia-wrapper"
   :perform (test-op (op c) (symbol-call :rove :run c)))
