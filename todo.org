@@ -2,5 +2,5 @@
 ** DONE Refactor config method (load credentials)
 ** DONE Refactor util methods
 ** DONE Implement call to feedbacks API
-** TODO Write tests for prettyprint-hash-table
-** TODO Write tests for parse-yaml-file
+** DONE Write tests for remove null values
+** DONE Write tests for parse-yaml-file

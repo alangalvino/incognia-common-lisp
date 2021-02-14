@@ -12,8 +12,8 @@ Now you're ready to:
 ```lisp
 (authenticate '("client-id" . "client-secret")) ;; or create a credentials.yml file
 
-(incognia-apis:signups :installation-id "your-installation-id"
-                       :address-line "your-address-line")
+(incognia:signups :installation-id "your-installation-id"
+                  :address-line "your-address-line")
 ```
 
 Simple, isn't?
