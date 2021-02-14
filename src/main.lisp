@@ -53,7 +53,6 @@
                                         :|address_line| address-line
                                         :|app_id| app-id))))
 
-
 (defun transactions (&key installation-id account-id type app-id)
   (dexador:post *transactions-uri*
                 :headers (list
