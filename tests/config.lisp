@@ -9,6 +9,6 @@
 (deftest test-load-credentials-from-file
   (testing "should load the credentials from file"
     (let* ((credentials (incognia-wrapper.config:load-credentials-from-yaml #p"tests/credentials.yaml")))
-      (ok (equal credentials '("client-id-01" . "client-secret-01"))))))
-
-(run-suite *package*)
+      (ok (equal credentials '("client-id-01" . "client-secret-01")))))
+  (testing "should raise an error when file doesn't exist"
+    (ok (signals (incognia-wrapper.config:load-credentials-from-yaml #p"wrong-path/credentials.yaml")))))
