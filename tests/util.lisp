@@ -6,16 +6,6 @@
 
 ;; NOTE: To run this test file, execute `(asdf:test-system :incognia-wrapper)' in your Lisp.
 
-(deftest test-pretty-print
-  (testing "should pretty print a hash"
-    (let* ((plist (make-hash-table)))
-      (setf (gethash '001 plist) '(CharlieBrown))
-      (setf (gethash '002 plist) '(FreddieSeal))
-      (ok (equal
-           (incognia-wrapper.util:pretty-print plist nil)
-           ""))))
-  )
-
 (deftest test-plist-remove-null-value
   (testing "should remove null values of a simple property list"
     (let* ((plist '(:key-1 1 :key-2 nil :key-3 3)))
