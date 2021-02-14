@@ -1,6 +1,6 @@
 (defpackage incognia-wrapper
   (:use :cl)
-  (:nicknames :incognia-apis)
+  (:nicknames :incognia)
   (:export :authenticate
            :feedbacks
            :signups
@@ -23,11 +23,11 @@
   (getf (jonathan:parse token-response) :|access_token|))
 
 (defun to-json (plist)
-  (jonathan:to-json (incognia-apis.util:plist-remove-null-values plist)))
+  (jonathan:to-json (incognia.util:plist-remove-null-values plist)))
 
 (defun authenticate (&optional credentials-cons)
   (setf *auth-token*
-        (let* ((credentials (or credentials-cons (incognia-apis.config:load-credentials-from-yaml))))
+        (let* ((credentials (or credentials-cons (incognia.config:load-credentials-from-yaml))))
           (parse-access-token (dexador:post *authentication-uri*
                                             :basic-auth credentials
                                             :headers '(("Content-Type" . "application/x-www-form-urlencoded")))))))
@@ -69,5 +69,5 @@
 (authenticate)
 
 #+nil
-(incognia-apis:signups :installation-id "installation-id"
-                       :address-line "address-line")
+(incognia:signups :installation-id "installation-id"
+                  :address-line "address-line")

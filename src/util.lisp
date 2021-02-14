@@ -1,6 +1,6 @@
 (defpackage incognia-wrapper.util
   (:use :cl)
-  (:nicknames :incognia-apis.util)
+  (:nicknames :incognia.util)
   (:export :plist-remove-null-values
            :parse-yaml-file
            :pretty-print))
