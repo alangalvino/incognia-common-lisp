@@ -12,5 +12,5 @@ jobs:
       uses: actions/checkout@v2
     - name: Install libyaml-dev
       run: sudo apt-get install libyaml-dev
-    - name: Run tests
+    - name: Run tests (Common Lisp Rove)
       uses: alangalvino/github-actions-cl-rove@main
