@@ -1,4 +1,5 @@
 # Common Lisp Incognia APIs Wrapper
+![tests workflow](https://github.com/alangalvino/incognia-wrapper/workflows/.github/workflows/tests.yml/badge.svg)
 
 Simple as:
 
