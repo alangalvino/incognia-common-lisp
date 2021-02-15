@@ -16,11 +16,9 @@
 (defsystem "incognia-wrapper/tests"
   :author "alan alvino"
   :license "MIT"
-  :depends-on (:dexador
-               :jonathan
+  :depends-on (:incognia-wrapper
                :cl-yaml
-               :rove
-               :incognia-wrapper)
+               :rove)
   :components ((:module "tests"
                 :components
                 ((:file "util")
