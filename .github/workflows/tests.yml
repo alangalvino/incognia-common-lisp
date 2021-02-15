@@ -13,4 +13,4 @@ jobs:
     - name: Install libyaml-dev
       run: sudo apt-get install libyaml-dev
     - name: Run tests
-      uses: alangalvino/github-actions-cl-rove
+      uses: alangalvino/github-actions-cl-rove@master
