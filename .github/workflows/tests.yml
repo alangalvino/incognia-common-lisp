@@ -3,10 +3,7 @@ on: [push]
 jobs:
   test:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        lisp: [sbcl-bin]
-    name: A job to test Common Lisp project
+    name: A job to run Common Lisp tests
     steps:
     - name: Checkout
       uses: actions/checkout@v2
