@@ -19,4 +19,4 @@ jobs:
     - name: Setup roswell
       run: ros install sbcl-bin && ros install rove
     - name: Run Common Lisp tests (Rove)
-      run: sudo ./tests/run-tests.sh
+      run: ./tests/run-tests.sh
