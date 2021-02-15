@@ -2,8 +2,7 @@
   (:use :cl)
   (:nicknames :incognia.util)
   (:export :plist-remove-null-values
-           :parse-yaml-file
-           :pretty-print))
+           :parse-yaml-file))
 (in-package :incognia-wrapper.util)
 
 (defun plist-remove-null-values (plist &optional (remove-in-depth t))
