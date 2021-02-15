@@ -10,4 +10,4 @@ jobs:
     - name: Install libyaml-dev
       run: sudo apt-get install libyaml-dev
     - name: Run tests (Common Lisp Rove)
-      uses: alangalvino/github-actions-cl-rove@main
+      uses: alangalvino/github-actions-cl-rove@v0.0.2
