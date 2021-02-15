@@ -28,13 +28,6 @@
 (defun parse-access-token (token-response)
   (getf (parse-json token-response) :|access_token|))
 
-(defun authenticate (&optional credentials-cons)
-  (setf *auth-token*
-        (let* ((credentials (or credentials-cons (incognia.config:load-credentials-from-yaml))))
-          (parse-access-token (dexador:post *authentication-uri*
-                                            :basic-auth credentials
-                                            :headers '(("Content-Type" . "application/x-www-form-urlencoded")))))))
-
 (defmacro do-request (&key uri method content)
   `(let* ((response (dex:request ,uri
                                  :method ,method
@@ -43,6 +36,13 @@
                                            (cons "Authorization" (concatenate 'string "Bearer " *auth-token*)))
                                  :content ,content)))
      (if response (parse-json response))))
+
+(defun authenticate (&optional credentials-cons)
+  (setf *auth-token*
+        (let* ((credentials (or credentials-cons (incognia.config:load-credentials-from-yaml))))
+          (parse-access-token (dexador:post *authentication-uri*
+                                            :basic-auth credentials
+                                            :headers '(("Content-Type" . "application/x-www-form-urlencoded")))))))
 
 (defun feedbacks (&key timestamp event app-id installation-id account-id signup-id)
   (do-request
