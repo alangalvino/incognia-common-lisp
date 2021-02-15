@@ -15,4 +15,6 @@ jobs:
     - name: Install roswell dependencies
       run: sudo apt-get -y install curl libcurl3-gnutls make
     - name: Download and install roswell
-      run: curl -L https://github.com/roswell/roswell/releases/download/v19.08.10.101/roswell_19.08.10.101-1_amd64.deb --output roswell.deb && dpkg -i roswell.deb
+      run: curl -L https://github.com/roswell/roswell/releases/download/v19.08.10.101/roswell_19.08.10.101-1_amd64.deb --output roswell.deb && sudo dpkg -i roswell.deb
+    - name: Setup roswell
+      run: ros install sbcl-bin && ros install rove
