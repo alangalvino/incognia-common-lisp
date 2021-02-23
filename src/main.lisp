@@ -44,7 +44,7 @@
                                             :basic-auth credentials
                                             :headers '(("Content-Type" . "application/x-www-form-urlencoded")))))))
 
-(defun feedbacks (&key timestamp event app-id installation-id account-id signup-id)
+(defun feedbacks (&key timestamp event app-id installation-id account-id signup-id login-id transaction-id)
   (do-request
     :uri *feedbacks-uri*
     :method :post
@@ -52,6 +52,8 @@
                             :|event| event
                             :|app_id| app-id
                             :|installation_id| installation-id
+                            :|login_id| login-id
+                            :|transaction_id| transaction-id
                             :|account_id| account-id
                             :|signup_id| signup-id))))
 
