@@ -3,12 +3,10 @@
   :author "alan alvino"
   :license "MIT"
   :depends-on (:dexador
-               :jonathan
-               :cl-yaml)
+               :jonathan)
   :components ((:module "src"
                 :components
                 ((:file "util")
-                 (:file "config")
                  (:file "main"))))
   :description "Common Lisp Incognia APIs Wrapper"
   :in-order-to ((test-op (test-op "incognia-wrapper/tests"))))
@@ -17,12 +15,10 @@
   :author "alan alvino"
   :license "MIT"
   :depends-on (:incognia-wrapper
-               :cl-yaml
                :rove)
   :components ((:module "tests"
                 :components
                 ((:file "util")
-                 (:file "config")
                  (:file "main"))))
   :description "Test system for incognia-wrapper"
   :perform (test-op (op c) (symbol-call :rove :run c)))

@@ -1,8 +1,8 @@
 (defpackage incognia-wrapper.util
   (:use :cl)
   (:nicknames :incognia.util)
-  (:export :plist-remove-null-values
-           :parse-yaml-file))
+  (:export :plist-remove-null-values))
+
 (in-package :incognia-wrapper.util)
 
 (defun plist-remove-null-values (plist &optional (remove-in-depth t))
@@ -17,6 +17,3 @@
              (if tmp-value
                  (setf new-plist (append new-plist (list key tmp-value))))
         finally (return new-plist)))
-
-(defun parse-yaml-file (filepath)
-  (yaml:parse (asdf:system-relative-pathname :incognia-wrapper filepath)))
