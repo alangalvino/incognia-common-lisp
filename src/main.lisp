@@ -21,6 +21,9 @@
 (defvar *auth-token* nil)
 (defvar *api-config* ())
 
+(deftype feedback-event-type () '(member :|signup_accepted| :|signup_declined| :|payment_accepted| :|payment_declined| :|payment_declined_by_risk_analysis| :|payment_declined_by_manual_review| :|payment_declined_by_business| :|payment_declined_by_acquirer| :|login_accepted| :|login_declined| :|verified| :|not_verified| :|account_takeover| :|chargeback|))
+(deftype region-type () '(member :br :us))
+
 (defun us-region-p ()
   (eq (getf *api-config* :region) :us))
 
@@ -54,15 +57,16 @@
     (cons client-id client-secret)))
 
 (defun configure (&key client-id client-secret region)
-  (progn (if client-id (setf (getf *api-config* :client-id) client-id))
-         (if client-secret (setf (getf *api-config* :client-secret) client-secret))
-         (if region (setf (getf *api-config* :region) region))
-         (revoke-token)))
+  (check-type region region-type)
+  (if client-id (setf (getf *api-config* :client-id) client-id))
+  (if client-secret (setf (getf *api-config* :client-secret) client-secret))
+  (if region (setf (getf *api-config* :region) region))
+  (revoke-token))
 
 (defun update-token ()
-  (progn (setf *auth-token* (authenticate))
-         (setf (getf *auth-token* :|created_at|) (get-universal-time))
-         *auth-token*))
+  (setf *auth-token* (authenticate))
+  (setf (getf *auth-token* :|created_at|) (get-universal-time))
+  *auth-token*)
 
 (defmacro do-request (&key uri method body basic-auth headers (parse-response t))
   `(let* ((response (dex:request ,uri
@@ -92,6 +96,7 @@
     :headers '(("Content-Type" . "application/x-www-form-urlencoded"))))
 
 (defun send-feedback (&key timestamp event installation-id account-id)
+  (check-type event feedback-event-type)
   (do-auth-request
     :uri (incognia-uri *feedbacks-uri*)
     :method :post
@@ -121,12 +126,12 @@
 (defun register-login (&key installation-id account-id app-id)
   (register-transaction :installation-id installation-id
                         :account-id account-id
-                        :type "login"
+                        :type :|login|
                         :app-id app-id))
 
 (defun register-payment (&key installation-id account-id app-id addresses)
   (register-transaction :installation-id installation-id
                         :account-id account-id
                         :addresses addresses
-                        :type "payment"
+                        :type :|payment|
                         :app-id app-id))
