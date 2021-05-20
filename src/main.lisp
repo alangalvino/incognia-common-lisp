@@ -112,13 +112,11 @@
   (do-auth-request
     :uri (incognia-uri *transactions-uri*)
     :method :post
-    :body (to-json (list :|installation_id| installation-id
-                         :|account_id| account-id
-                         :|type| type
-                         (if addresses :|addresses|)
-                         (if addresses addresses)
-                         (if app-id :|app_id|)
-                         (if app-id app-id)))))
+    :body (to-json `(:|installation_id| ,installation-id
+                     :|account_id| ,account-id
+                     :|type| ,type
+                     ,@(if addresses '(:|addresses| addresses))
+                     ,@(if app-id '(:|app_id| app-id))))))
 
 (defun register-login (&key installation-id account-id app-id)
   (register-transaction :installation-id installation-id
