@@ -4,6 +4,7 @@
   (:export :configure
            :send-feedback
            :register-signup
+           :get-signup-assessment
            :register-payment
            :register-login))
 (in-package :incognia-wrapper)
@@ -13,10 +14,10 @@
 (defvar *incognia-us-uri* "https://api.us.incognia.com/")
 
 ;; Incognia APIs Resource URIs
-(defvar *authentication-uri* "api/v1/token")
-(defvar *signups-uri* "api/v2/onboarding/signups")
-(defvar *transactions-uri* "api/v2/authentication/transactions")
-(defvar *feedbacks-uri* "api/v2/feedbacks")
+(defvar *authentication-uri* "api/v1/token/")
+(defvar *signups-uri* "api/v2/onboarding/signups/")
+(defvar *transactions-uri* "api/v2/authentication/transactions/")
+(defvar *feedbacks-uri* "api/v2/feedbacks/")
 
 (defvar *auth-token* nil)
 (defvar *api-config* ())
@@ -104,6 +105,11 @@
                          :|event| event
                          :|installation_id| installation-id
                          :|account_id| account-id))))
+
+(defun get-signup-assessment (&key signup-id)
+  (do-auth-request
+    :uri (concatenate 'string  (incognia-uri *signups-uri*) signup-id)
+    :method :get))
 
 (defun register-signup (&key installation-id address-line app-id)
   (do-auth-request
