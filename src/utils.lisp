@@ -1,9 +1,4 @@
-(defpackage incognia-wrapper.util
-  (:use :cl)
-  (:nicknames :incognia.util)
-  (:export :plist-remove-null-values))
-
-(in-package :incognia-wrapper.util)
+(in-package :incognia-wrapper)
 
 (defun plist-remove-null-values (plist &optional (remove-in-depth t))
   (loop with new-plist = nil
@@ -17,3 +12,9 @@
              (if tmp-value
                  (setf new-plist (append new-plist (list key tmp-value))))
         finally (return new-plist)))
+
+(defun to-json (plist)
+  (jonathan:to-json (plist-remove-null-values plist)))
+
+(defun parse-json (alist)
+  (jonathan:parse alist))

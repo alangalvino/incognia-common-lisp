@@ -1,73 +1,20 @@
-(defpackage incognia-wrapper
-  (:use :cl)
-  (:nicknames :incognia)
-  (:export :configure
-           :send-feedback
-           :register-signup
-           :get-signup-assessment
-           :register-payment
-           :register-login))
 (in-package :incognia-wrapper)
 
-;; Incognia APIs URIs
-(defvar *incognia-br-uri* "https://incognia.inloco.com.br/")
-(defvar *incognia-us-uri* "https://api.us.incognia.com/")
-
-;; Incognia APIs Resource URIs
-(defvar *authentication-uri* "api/v1/token/")
-(defvar *signups-uri* "api/v2/onboarding/signups/")
-(defvar *transactions-uri* "api/v2/authentication/transactions/")
-(defvar *feedbacks-uri* "api/v2/feedbacks/")
-
-(defvar *auth-token* nil)
-(defvar *api-config* ())
-
-(deftype feedback-event-type () '(member :|signup_accepted| :|signup_declined| :|payment_accepted| :|payment_declined| :|payment_declined_by_risk_analysis| :|payment_declined_by_manual_review| :|payment_declined_by_business| :|payment_declined_by_acquirer| :|login_accepted| :|login_declined| :|verified| :|not_verified| :|account_takeover| :|chargeback|))
-(deftype region-type () '(member :br :us))
-
-(defun us-region-p ()
-  (eq (getf *api-config* :region) :us))
-
-(defun revoke-token ()
-  (setf *auth-token* nil))
-
-(defun incognia-uri (resource-uri)
-  (concatenate 'string (if (us-region-p) *incognia-us-uri*
-                           *incognia-br-uri*) resource-uri))
-
-(defun to-json (plist)
-  (jonathan:to-json (incognia.util:plist-remove-null-values plist)))
-
-(defun parse-json (alist)
-  (jonathan:parse alist))
-
-(defun auth-token-valid-p ()
-  (let ((expires-in (parse-integer (getf *auth-token* :|expires_in|)))
-        (created-at (getf *auth-token* :|created_at|))
-        (now (get-universal-time)))
-    (and *auth-token* (> expires-in (- now created-at)))))
-
-(defun auth-token ()
-  (if (and *auth-token* (getf *auth-token* :|access_token|) (auth-token-valid-p))
-      *auth-token*
-      (update-token)))
-
-(defun credentials ()
-  (let ((client-id (getf *api-config* :client-id))
-        (client-secret (getf *api-config* :client-secret)))
-    (cons client-id client-secret)))
-
-(defun configure (&key client-id client-secret region)
-  (check-type region region-type)
-  (if client-id (setf (getf *api-config* :client-id) client-id))
-  (if client-secret (setf (getf *api-config* :client-secret) client-secret))
-  (if region (setf (getf *api-config* :region) region))
-  (revoke-token))
-
-(defun update-token ()
-  (setf *auth-token* (authenticate))
-  (setf (getf *auth-token* :|created_at|) (get-universal-time))
-  *auth-token*)
+(deftype feedback-event-type () '(member
+                                  :|signup_accepted|
+                                  :|signup_declined|
+                                  :|payment_accepted|
+                                  :|payment_declined|
+                                  :|payment_declined_by_risk_analysis|
+                                  :|payment_declined_by_manual_review|
+                                  :|payment_declined_by_business|
+                                  :|payment_declined_by_acquirer|
+                                  :|login_accepted|
+                                  :|login_declined|
+                                  :|verified|
+                                  :|not_verified|
+                                  :|account_takeover|
+                                  :|chargeback|))
 
 (defmacro do-request (&key uri method body basic-auth headers (parse-response t))
   `(let* ((response (handler-case (dex:request ,uri
