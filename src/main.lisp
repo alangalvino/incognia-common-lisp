@@ -1,23 +1,39 @@
 (defpackage incognia-wrapper
   (:use :cl)
   (:nicknames :incognia)
-  (:export :authenticate
-           :feedbacks
-           :signups
-           :transactions))
+  (:export :configure
+           :send-feedback
+           :register-signup
+           :get-signup-assessment
+           :register-payment
+           :register-login))
 (in-package :incognia-wrapper)
 
 ;; Incognia APIs URIs
-(defvar *incognia-uri* "https://incognia.inloco.com.br/")
-(defvar *authentication-uri* (concatenate 'string *incognia-uri* "api/v1/token"))
-(defvar *signups-uri* (concatenate 'string *incognia-uri* "api/v2/onboarding/signups"))
-(defvar *transactions-uri* (concatenate 'string *incognia-uri* "api/v2/authentication/transactions"))
-(defvar *feedbacks-uri* (concatenate 'string *incognia-uri* "api/v2/feedbacks"))
+(defvar *incognia-br-uri* "https://incognia.inloco.com.br/")
+(defvar *incognia-us-uri* "https://api.us.incognia.com/")
+
+;; Incognia APIs Resource URIs
+(defvar *authentication-uri* "api/v1/token/")
+(defvar *signups-uri* "api/v2/onboarding/signups/")
+(defvar *transactions-uri* "api/v2/authentication/transactions/")
+(defvar *feedbacks-uri* "api/v2/feedbacks/")
 
 (defvar *auth-token* nil)
+(defvar *api-config* ())
 
-(defun revoke-auth-token ()
+(deftype feedback-event-type () '(member :|signup_accepted| :|signup_declined| :|payment_accepted| :|payment_declined| :|payment_declined_by_risk_analysis| :|payment_declined_by_manual_review| :|payment_declined_by_business| :|payment_declined_by_acquirer| :|login_accepted| :|login_declined| :|verified| :|not_verified| :|account_takeover| :|chargeback|))
+(deftype region-type () '(member :br :us))
+
+(defun us-region-p ()
+  (eq (getf *api-config* :region) :us))
+
+(defun revoke-token ()
   (setf *auth-token* nil))
+
+(defun incognia-uri (resource-uri)
+  (concatenate 'string (if (us-region-p) *incognia-us-uri*
+                           *incognia-br-uri*) resource-uri))
 
 (defun to-json (plist)
   (jonathan:to-json (incognia.util:plist-remove-null-values plist)))
@@ -25,59 +41,105 @@
 (defun parse-json (alist)
   (jonathan:parse alist))
 
-(defun parse-access-token (token-response)
-  (getf (parse-json token-response) :|access_token|))
+(defun auth-token-valid-p ()
+  (let ((expires-in (parse-integer (getf *auth-token* :|expires_in|)))
+        (created-at (getf *auth-token* :|created_at|))
+        (now (get-universal-time)))
+    (and *auth-token* (> expires-in (- now created-at)))))
 
-(defmacro do-request (&key uri method content)
-  `(let* ((response (dex:request ,uri
-                                 :method ,method
-                                 :headers (list
-                                           '("Content-Type" . "application/json")
-                                           (cons "Authorization" (concatenate 'string "Bearer " *auth-token*)))
-                                 :content ,content)))
-     (if response (parse-json response))))
+(defun auth-token ()
+  (if (and *auth-token* (getf *auth-token* :|access_token|) (auth-token-valid-p))
+      *auth-token*
+      (update-token)))
 
-(defun authenticate (&optional credentials-cons)
-  (setf *auth-token*
-        (let* ((credentials (or credentials-cons (incognia.config:load-credentials-from-yaml))))
-          (parse-access-token (dexador:post *authentication-uri*
-                                            :basic-auth credentials
-                                            :headers '(("Content-Type" . "application/x-www-form-urlencoded")))))))
+(defun credentials ()
+  (let ((client-id (getf *api-config* :client-id))
+        (client-secret (getf *api-config* :client-secret)))
+    (cons client-id client-secret)))
 
-(defun feedbacks (&key timestamp event app-id installation-id account-id signup-id login-id transaction-id)
+(defun configure (&key client-id client-secret region)
+  (check-type region region-type)
+  (if client-id (setf (getf *api-config* :client-id) client-id))
+  (if client-secret (setf (getf *api-config* :client-secret) client-secret))
+  (if region (setf (getf *api-config* :region) region))
+  (revoke-token))
+
+(defun update-token ()
+  (setf *auth-token* (authenticate))
+  (setf (getf *auth-token* :|created_at|) (get-universal-time))
+  *auth-token*)
+
+(defmacro do-request (&key uri method body basic-auth headers (parse-response t))
+  `(let* ((response (handler-case (dex:request ,uri
+                                               :method ,method
+                                               :basic-auth ,basic-auth
+                                               :headers ,headers
+                                               :content ,body)
+                      (dex:http-request-failed (e)
+                        (format nil "{ \"error\": \"http request to ~d has failed with status code ~D and body ~d\"}" (quri:render-uri (dex:request-uri e)) (dex:response-status e) (dex:response-body e))))))
+     (if (and response ,parse-response)
+         (parse-json response)
+         response)))
+
+(defmacro do-auth-request (&key uri method body)
+  `(let* ((token (getf (auth-token) :|access_token|)))
+     (do-request
+       :uri ,uri
+       :method ,method
+       :headers (list
+                 '("Content-Type" . "application/json")
+                 (cons "Authorization" (concatenate 'string "Bearer " token)))
+       :body ,body)))
+
+(defun authenticate ()
   (do-request
-    :uri *feedbacks-uri*
+    :uri (incognia-uri *authentication-uri*)
     :method :post
-    :content (to-json (list :|timestamp| timestamp
-                            :|event| event
-                            :|app_id| app-id
-                            :|installation_id| installation-id
-                            :|login_id| login-id
-                            :|transaction_id| transaction-id
-                            :|account_id| account-id
-                            :|signup_id| signup-id))))
+    :basic-auth (credentials)
+    :headers '(("Content-Type" . "application/x-www-form-urlencoded"))))
 
-(defun signups (&key installation-id address-line app-id)
-  (do-request
-    :uri *signups-uri*
+(defun send-feedback (&key timestamp event installation-id account-id)
+  (check-type event feedback-event-type)
+  (do-auth-request
+    :uri (incognia-uri *feedbacks-uri*)
     :method :post
-    :content (to-json (list :|installation_id| installation-id
-                            :|address_line| address-line
-                            :|app_id| app-id))))
+    :body (to-json (list :|timestamp| timestamp
+                         :|event| event
+                         :|installation_id| installation-id
+                         :|account_id| account-id))))
 
-(defun transactions (&key installation-id account-id type app-id)
-  (do-request
-    :uri *transactions-uri*
+(defun get-signup-assessment (&key signup-id)
+  (do-auth-request
+    :uri (concatenate 'string  (incognia-uri *signups-uri*) signup-id)
+    :method :get))
+
+(defun register-signup (&key installation-id address-line app-id)
+  (do-auth-request
+    :uri (incognia-uri *signups-uri*)
     :method :post
-    :content (to-json (list :|installation_id| installation-id
-                            :|account_id| account-id
-                            :|type| type
-                            :|app_id| app-id))))
+    :body (to-json (list :|installation_id| installation-id
+                         :|address_line| address-line
+                         :|app_id| app-id))))
 
-;; Example
-#+nil
-(authenticate)
+(defun register-transaction (&key installation-id account-id type app-id addresses)
+  (do-auth-request
+    :uri (incognia-uri *transactions-uri*)
+    :method :post
+    :body (to-json `(:|installation_id| ,installation-id
+                     :|account_id| ,account-id
+                     :|type| ,type
+                     ,@(if addresses '(:|addresses| addresses))
+                     ,@(if app-id '(:|app_id| app-id))))))
 
-#+nil
-(incognia:signups :installation-id "installation-id"
-                  :address-line "address-line")
+(defun register-login (&key installation-id account-id app-id)
+  (register-transaction :installation-id installation-id
+                        :account-id account-id
+                        :type :|login|
+                        :app-id app-id))
+
+(defun register-payment (&key installation-id account-id app-id addresses)
+  (register-transaction :installation-id installation-id
+                        :account-id account-id
+                        :addresses addresses
+                        :type :|payment|
+                        :app-id app-id))
