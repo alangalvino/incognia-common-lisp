@@ -48,7 +48,7 @@
     (and *auth-token* (> expires-in (- now created-at)))))
 
 (defun auth-token ()
-  (if (and *auth-token* (auth-token-valid-p))
+  (if (and *auth-token* (getf *auth-token* :|access_token|) (auth-token-valid-p))
       *auth-token*
       (update-token)))
 
@@ -70,11 +70,13 @@
   *auth-token*)
 
 (defmacro do-request (&key uri method body basic-auth headers (parse-response t))
-  `(let* ((response (dex:request ,uri
-                                 :method ,method
-                                 :basic-auth ,basic-auth
-                                 :headers ,headers
-                                 :content ,body)))
+  `(let* ((response (handler-case (dex:request ,uri
+                                               :method ,method
+                                               :basic-auth ,basic-auth
+                                               :headers ,headers
+                                               :content ,body)
+                      (dex:http-request-failed (e)
+                        (format nil "{ \"error\": \"http request to ~d has failed with status code ~D and body ~d\"}" (quri:render-uri (dex:request-uri e)) (dex:response-status e) (dex:response-body e))))))
      (if (and response ,parse-response)
          (parse-json response)
          response)))
