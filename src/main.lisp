@@ -16,37 +16,9 @@
                                   :|account_takeover|
                                   :|chargeback|))
 
-(defmacro do-request (&key uri method body basic-auth headers (parse-response t))
-  `(let* ((response (handler-case (dex:request ,uri
-                                               :method ,method
-                                               :basic-auth ,basic-auth
-                                               :headers ,headers
-                                               :content ,body)
-                      (dex:http-request-failed (e)
-                        (format nil "{ \"error\": \"http request to ~d has failed with status code ~D and body ~d\"}" (quri:render-uri (dex:request-uri e)) (dex:response-status e) (dex:response-body e))))))
-     (if (and response ,parse-response)
-         (parse-json response)
-         response)))
-
-(defmacro do-auth-request (&key uri method body)
-  `(let* ((token (getf (auth-token) :|access_token|)))
-     (do-request
-       :uri ,uri
-       :method ,method
-       :headers (list
-                 '("Content-Type" . "application/json")
-                 (cons "Authorization" (concatenate 'string "Bearer " token)))
-       :body ,body)))
-
-(defun authenticate ()
-  (do-request
-    :uri (incognia-uri *authentication-uri*)
-    :method :post
-    :basic-auth (credentials)
-    :headers '(("Content-Type" . "application/x-www-form-urlencoded"))))
-
 (defun send-feedback (&key timestamp event installation-id account-id)
   (check-type event feedback-event-type)
+
   (do-auth-request
     :uri (incognia-uri *feedbacks-uri*)
     :method :post
@@ -60,23 +32,35 @@
     :uri (concatenate 'string  (incognia-uri *signups-uri*) signup-id)
     :method :get))
 
-(defun register-signup (&key installation-id address-line app-id)
-  (do-auth-request
-    :uri (incognia-uri *signups-uri*)
-    :method :post
-    :body (to-json (list :|installation_id| installation-id
-                         :|address_line| address-line
-                         :|app_id| app-id))))
+(defun register-signup (&key installation-id address app-id)
+  (assert installation-id)
+
+  (let* ((request-body (append
+                        (list :|installation_id| installation-id)
+                        (and app-id (list :|app_id| app-id))
+                        (and address (addr-line-valid-p address) (addr-line-plist address))
+                        (and address (addr-coordinates-valid-p address) (addr-coordinates-plist address))
+                        (and address (addr-structured-valid-p address) (addr-structured-plist address)))))
+
+    (do-auth-request
+      :uri (incognia-uri *signups-uri*)
+      :method :post
+      :body (to-json request-body))))
 
 (defun register-transaction (&key installation-id account-id type app-id addresses)
-  (do-auth-request
-    :uri (incognia-uri *transactions-uri*)
-    :method :post
-    :body (to-json `(:|installation_id| ,installation-id
-                     :|account_id| ,account-id
-                     :|type| ,type
-                     ,@(if addresses '(:|addresses| addresses))
-                     ,@(if app-id '(:|app_id| app-id))))))
+  (assert (and installation-id account-id type))
+
+  (let* ((request-body (append
+                        (list :|installation_id| installation-id)
+                        (list :|account_id| account-id)
+                        (list :|type| type)
+                        (and app-id (list :|app_id| app-id))
+                        (and addresses (mapcar #'addr-plist addresses)))))
+
+    (do-auth-request
+      :uri (incognia-uri *transactions-uri*)
+      :method :post
+      :body (to-json request-body))))
 
 (defun register-login (&key installation-id account-id app-id)
   (register-transaction :installation-id installation-id

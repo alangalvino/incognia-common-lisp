@@ -5,11 +5,26 @@
 (defun revoke-token ()
   (setf *auth-token* nil))
 
-(defun auth-token-valid-p ()
-  (let ((expires-in (parse-integer (getf *auth-token* :|expires_in|)))
-        (created-at (getf *auth-token* :|created_at|))
-        (now (get-universal-time)))
-    (and *auth-token* (> expires-in (- now created-at)))))
+(defun token-expires-in ()
+  (getf *auth-token* :|expires_in|))
+
+(defun token-created-at ()
+  (getf *auth-token* :|created_at|))
+
+(defun access-token ()
+  (getf *auth-token* :|access_token|))
+
+(defun authenticate ()
+  (assert (and (client-id) (client-secret) (region)))
+  (do-request
+    :uri (incognia-uri *authentication-uri*)
+    :method :post
+    :basic-auth (credentials)
+    :headers '(("Content-Type" . "application/x-www-form-urlencoded"))))
+
+(defun auth-token-validp ()
+  (let ((now (get-universal-time)))
+    (and *auth-token* (access-token) (> (parse-integer (token-expires-in)) (- now (token-created-at))))))
 
 (defun update-token ()
   (setf *auth-token* (authenticate))
@@ -17,6 +32,4 @@
   *auth-token*)
 
 (defun auth-token ()
-  (if (and *auth-token* (getf *auth-token* :|access_token|) (auth-token-valid-p))
-      *auth-token*
-      (update-token)))
+  (if (auth-token-validp) *auth-token* (update-token)))
