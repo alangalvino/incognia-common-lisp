@@ -11,7 +11,7 @@ In the future you'll be able to install from Quicklisp:
 (ql:quickload :cl-incognia)
 ```
 
-For now you can install localy this way:
+For now you can install it locally:
 
 ```
 ;; Move your repository to ~/common-lisp
@@ -48,7 +48,7 @@ Authentication is done transparently so you don't need to worry about it.
 
 #### Registering Signup
 
-This method registers a new signup for the given installation (`:installation-id`), returning a risk assessment and supporting evidence (see [Incognia Response Structure](## Incognia Response Structure):
+This method registers a new signup for the given installation (`:installation-id`), returning a risk assessment and supporting evidence (see [Incognia Response Structure](#incognia-response-structure)):
 
 ```lisp
 (incognia:register-signup :installation-id "your-installation-id"
@@ -57,7 +57,7 @@ This method registers a new signup for the given installation (`:installation-id
 
 #### Getting a Signup
 
-This method allows you to query the latest assessment for a given signup event, identified by its `:signup-id`. 
+This method allows you to query the latest assessment for a given signup event, identified by its `:signup-id` (see [Incognia Response Structure](#incognia-response-structure)). 
 
 ```lisp
 (incognia:get-signup-assessment :signup-id "your-signup-id")
@@ -65,7 +65,7 @@ This method allows you to query the latest assessment for a given signup event, 
 
 #### Registering Login
 
-This method registers a new login for the given installation (`:installation-id`) and user account (`:account-id`), returning a risk assessment and the supporting evidence.
+This method registers a new login for the given installation (`:installation-id`) and user account (`:account-id`), returning a risk assessment and the supporting evidence (see [Incognia Response Structure](#incognia-response-structure)).
 
 ```lisp
 (incognia:register-login :installation-id "your-installation-id"
@@ -74,7 +74,7 @@ This method registers a new login for the given installation (`:installation-id`
 
 #### Registering Payment
 
-This method registers a new payment for the given installation (`:installation-id`) and user account (`:account-id`), returning a risk assessment and the supporting evidence.
+This method registers a new payment for the given installation (`:installation-id`) and user account (`:account-id`), returning a risk assessment and the supporting evidence (see [Incognia Response Structure](#incognia-response-structure)).
 
 ```lisp
 (incognia:register-payment :installation-id "your-installation-id"
@@ -86,7 +86,7 @@ This method registers a new payment for the given installation (`:installation-i
 
 #### Sending Feedback
 
-This method registers a feedback event for the given installation (`:installation-id`) related to a signup, login or payment.
+This method registers a feedback event for the given installation (`:installation-id`) related to a signup, login or payment (see [Incognia Response Structure](#incognia-response-structure)).
 
 ```lisp
 (incognia:send-feedback :installation-id "your-installation-id"
@@ -95,7 +95,14 @@ This method registers a feedback event for the given installation (`:installatio
                         :timestamp (get-universal-time))
 ```
 
-## Incognia Response Structure
+## Incognia API Response Structure
+
+Incognia API response is composed by:
+
+- id (resource id, ex., login id)
+- request-id
+- risk_assessment (low_risk, high_risk or unknow_risk)
+- evidence
 
 ```lisp
 (:|id| "<resource-id>"
@@ -113,6 +120,8 @@ This method registers a feedback event for the given installation (`:installatio
  )
 ```
 
+
+
 ## Handling Unexpected HTTP Status Code
 
 // TODO
@@ -127,7 +136,9 @@ Incognia is a location identity platform for mobile apps that enables:
 
 ## Create a Free Incognia Account
 
-1. 
+1. Go to https://www.incognia.com/ and click on "Sign Up For Free"
+2. Create an Account
+3. You're ready to integrate [Incognia SDK](https://docs.incognia.com/sdk/getting-started) and use [Incognia APIs](https://dash.incognia.com/api-reference)
 
 ## License
 
