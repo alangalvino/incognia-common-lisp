@@ -48,7 +48,7 @@ Authentication is done transparently so you don't need to worry about it.
 
 #### Registering Signup
 
-This method registers a new signup for the given installation (`:installation-id`), returning a risk assessment and supporting evidence (see [Incognia Response Structure](#incognia-response-structure)):
+This method registers a new signup for the given installation (`:installation-id`), returning a risk assessment and supporting evidence (see [Response Structure](#response-structure)):
 
 ```lisp
 (incognia:register-signup :installation-id "your-installation-id"
@@ -57,7 +57,7 @@ This method registers a new signup for the given installation (`:installation-id
 
 #### Getting a Signup
 
-This method allows you to query the latest assessment for a given signup event, identified by its `:signup-id` (see [Incognia Response Structure](#incognia-response-structure)). 
+This method allows you to query the latest assessment for a given signup event, identified by its `:signup-id` (see [Response Structure](#response-structure)). 
 
 ```lisp
 (incognia:get-signup-assessment :signup-id "your-signup-id")
@@ -65,7 +65,7 @@ This method allows you to query the latest assessment for a given signup event, 
 
 #### Registering Login
 
-This method registers a new login for the given installation (`:installation-id`) and user account (`:account-id`), returning a risk assessment and the supporting evidence (see [Incognia Response Structure](#incognia-response-structure)).
+This method registers a new login for the given installation (`:installation-id`) and user account (`:account-id`), returning a risk assessment and the supporting evidence (see [Response Structure](#response-structure)).
 
 ```lisp
 (incognia:register-login :installation-id "your-installation-id"
@@ -74,7 +74,7 @@ This method registers a new login for the given installation (`:installation-id`
 
 #### Registering Payment
 
-This method registers a new payment for the given installation (`:installation-id`) and user account (`:account-id`), returning a risk assessment and the supporting evidence (see [Incognia Response Structure](#incognia-response-structure)).
+This method registers a new payment for the given installation (`:installation-id`) and user account (`:account-id`), returning a risk assessment and the supporting evidence (see [Response Structure](#response-structure)).
 
 ```lisp
 (incognia:register-payment :installation-id "your-installation-id"
@@ -86,7 +86,7 @@ This method registers a new payment for the given installation (`:installation-i
 
 #### Sending Feedback
 
-This method registers a feedback event for the given installation (`:installation-id`) related to a signup, login or payment (see [Incognia Response Structure](#incognia-response-structure)).
+This method registers a feedback event for the given installation (`:installation-id`) related to a signup, login or payment (see [Response Structure](#response-structure)).
 
 ```lisp
 (incognia:send-feedback :installation-id "your-installation-id"
@@ -95,9 +95,9 @@ This method registers a feedback event for the given installation (`:installatio
                         :timestamp (get-universal-time))
 ```
 
-## Incognia API Response Structure
+## Response Structure
 
-Incognia API response is composed by:
+With the exception of [Sending Feedback](#sending-feedback) method that returns an empty body (`nil`), Incognia API response is composed by:
 
 - id (resource id, ex., login id)
 - request-id
