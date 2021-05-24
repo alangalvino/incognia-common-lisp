@@ -19,6 +19,11 @@
                            :addresses (list
                                       (incognia:make-address :line "340 Avenue, CA" :type :|home|)
                                       (incognia:make-address :line "500 Street, CA" :type :|billing|)))
+
+(incognia:send-feedback :installation-id "your-installation-id"
+                        :event :|verified|
+                        :account-id "your-account-id"
+                        :timestamp (get-universal-time))
 ```
 
 ## License
