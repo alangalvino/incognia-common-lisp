@@ -1,13 +1,17 @@
-# Common Lisp Incognia APIs Wrapper
+# Incognia API Common Lisp Wrapper
 ![tests workflow](https://github.com/alangalvino/incognia-wrapper/workflows/.github/workflows/tests.yml/badge.svg)
 
-Simple as:
+## How To Use
 
 ```lisp
-(authenticate '("client-id" . "client-secret")) ;; or create a credentials.yml file
+(incognia:configure :client-id "your-client-id"
+                    :client-secret "your-client-secret"
+                    :region :us)
 
-(incognia:signups :installation-id "your-installation-id"
-                  :address-line "your-address-line")
+(incognia:register-signup :installation-id "your-installation-id"
+                          :address (incognia:make-address :line "340 Avenue, CA"))
+
+
 ```
 
 ## License
