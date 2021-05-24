@@ -1,9 +1,4 @@
-(defpackage incognia-wrapper.util
-  (:use :cl)
-  (:nicknames :incognia.util)
-  (:export :plist-remove-null-values
-           :parse-yaml-file))
-(in-package :incognia-wrapper.util)
+(in-package :incognia-wrapper)
 
 (defun plist-remove-null-values (plist &optional (remove-in-depth t))
   (loop with new-plist = nil
@@ -18,5 +13,8 @@
                  (setf new-plist (append new-plist (list key tmp-value))))
         finally (return new-plist)))
 
-(defun parse-yaml-file (filepath)
-  (yaml:parse (asdf:system-relative-pathname :incognia-wrapper filepath)))
+(defun to-json (plist)
+  (jonathan:to-json (plist-remove-null-values plist)))
+
+(defun parse-json (alist)
+  (jonathan:parse alist))
