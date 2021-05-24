@@ -136,7 +136,7 @@ Incognia is a location identity platform for mobile apps that enables:
 
 ## Create a Free Incognia Account
 
-1. Go to https://www.incognia.com/ and click on "Sign Up For Free"
+1. Go to [Incognia](https://www.incognia.com/) and click on "Sign Up For Free"
 2. Create an Account
 3. You're ready to integrate [Incognia SDK](https://docs.incognia.com/sdk/getting-started) and use [Incognia APIs](https://dash.incognia.com/api-reference)
 
