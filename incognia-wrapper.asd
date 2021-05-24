@@ -28,11 +28,6 @@
                 :components
                 ((:file "package")
                  (:file "utils")
-                 (:file "http")
-                 (:file "routes")
-                 (:file "address")
-                 (:file "config")
-                 (:file "auth")
                  (:file "main"))))
   :description "Test system for incognia-wrapper"
   :perform (test-op (op c) (symbol-call :rove :run c)))
