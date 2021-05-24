@@ -89,13 +89,13 @@
                  :postal-code postal-code
                  :type type))
 
-(defmethod addr-coordinates-valid-p ((obj address))
+(defmethod addr-coordinates-validp ((obj address))
   (and (typep  (addr-lat obj) 'float) (typep (addr-lng obj) 'float)))
 
-(defmethod addr-line-valid-p ((obj address))
+(defmethod addr-line-validp ((obj address))
   (addr-line obj))
 
-(defmethod addr-structured-valid-p ((obj address))
+(defmethod addr-structured-validp ((obj address))
   (or (addr-locale obj)
       (addr-country-code obj)
       (addr-country-name obj)
@@ -108,10 +108,10 @@
       (addr-street obj)
       (addr-postal-code obj)))
 
-(defmethod addr-valid-p ((obj address))
-  (or (addr-line-valid-p obj)
-      (addr-coordinates-valid-p obj)
-      (addr-structured-valid-p obj)))
+(defmethod addr-validp ((obj address))
+  (or (addr-line-validp obj)
+      (addr-coordinates-validp obj)
+      (addr-structured-validp obj)))
 
 (defmethod addr-line-plist ((obj address))
   (list :|address_line| (addr-line obj)))
@@ -136,6 +136,6 @@
 (defmethod addr-plist ((obj address))
   (append
    (list :|type| (addr-type obj))
-   (and (addr-line-valid-p obj) (addr-line-plist obj))
-   (and (addr-coordinates-valid-p obj) (addr-coordinates-plist obj))
-   (and (addr-structured-valid-p obj) (addr-structured-plist obj))))
+   (and (addr-line-validp obj) (addr-line-plist obj))
+   (and (addr-coordinates-validp obj) (addr-coordinates-plist obj))
+   (and (addr-structured-validp obj) (addr-structured-plist obj))))
