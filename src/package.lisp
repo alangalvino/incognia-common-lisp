@@ -2,6 +2,7 @@
   (:use :cl)
   (:nicknames :incognia)
   (:export :configure
+           :make-address
            :send-feedback
            :register-signup
            :get-signup-assessment
