@@ -14,9 +14,17 @@
 (defun access-token ()
   (getf *auth-token* :|access_token|))
 
+(defun authenticate ()
+  (assert (and (client-id) (client-secret) (region)))
+  (do-request
+    :uri (incognia-uri *authentication-uri*)
+    :method :post
+    :basic-auth (credentials)
+    :headers '(("Content-Type" . "application/x-www-form-urlencoded"))))
+
 (defun auth-token-validp ()
   (let ((now (get-universal-time)))
-    (and *auth-token* (access-token) (> (parse-integer token-expires-in) (- now (token-created-at))))))
+    (and *auth-token* (access-token) (> (parse-integer (token-expires-in)) (- now (token-created-at))))))
 
 (defun update-token ()
   (setf *auth-token* (authenticate))

@@ -16,34 +16,6 @@
                                   :|account_takeover|
                                   :|chargeback|))
 
-(defmacro do-request (&key uri method body basic-auth headers (parse-response t))
-  `(let* ((response (dex:request ,uri
-                                 :method ,method
-                                 :basic-auth ,basic-auth
-                                 :headers ,headers
-                                 :content ,body)))
-     (if (and response ,parse-response)
-         (parse-json response)
-         response)))
-
-(defmacro do-auth-request (&key uri method body)
-  `(let* ((token (getf (auth-token) :|access_token|)))
-     (do-request
-       :uri ,uri
-       :method ,method
-       :headers (list
-                 '("Content-Type" . "application/json")
-                 (cons "Authorization" (concatenate 'string "Bearer " token)))
-       :body ,body)))
-
-(defun authenticate ()
-  (assert (and (client-id) (client-secret) (region)))
-  (do-request
-    :uri (incognia-uri *authentication-uri*)
-    :method :post
-    :basic-auth (credentials)
-    :headers '(("Content-Type" . "application/x-www-form-urlencoded"))))
-
 (defun send-feedback (&key timestamp event installation-id account-id)
   (check-type event feedback-event-type)
 
