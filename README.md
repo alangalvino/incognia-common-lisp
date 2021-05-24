@@ -11,7 +11,14 @@
 (incognia:register-signup :installation-id "your-installation-id"
                           :address (incognia:make-address :line "340 Avenue, CA"))
 
+(incognia:register-login :installation-id "your-installation-id"
+                         :account-id "your-account-id")
 
+(incognia:register-payment :installation-id "your-installation-id"
+                           :account-id "your-account-id"
+                           :addresses (list
+                                      (incognia:make-address :line "340 Avenue, CA" :type :|home|)
+                                      (incognia:make-address :line "500 Street, CA" :type :|billing|)))
 ```
 
 ## License
