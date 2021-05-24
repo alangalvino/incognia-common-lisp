@@ -17,13 +17,11 @@
                                   :|chargeback|))
 
 (defmacro do-request (&key uri method body basic-auth headers (parse-response t))
-  `(let* ((response (handler-case (dex:request ,uri
-                                               :method ,method
-                                               :basic-auth ,basic-auth
-                                               :headers ,headers
-                                               :content ,body)
-                      (dex:http-request-failed (e)
-                        (format nil "{ \"error\": \"http request to ~d has failed with status code ~D and body ~d\"}" (quri:render-uri (dex:request-uri e)) (dex:response-status e) (dex:response-body e))))))
+  `(let* ((response (dex:request ,uri
+                                 :method ,method
+                                 :basic-auth ,basic-auth
+                                 :headers ,headers
+                                 :content ,body)))
      (if (and response ,parse-response)
          (parse-json response)
          response)))
@@ -39,6 +37,7 @@
        :body ,body)))
 
 (defun authenticate ()
+  (assert (and (client-id) (client-secret) (region)))
   (do-request
     :uri (incognia-uri *authentication-uri*)
     :method :post
