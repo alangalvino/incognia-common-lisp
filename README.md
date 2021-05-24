@@ -38,27 +38,43 @@ Before calling the API methods, you need to configure your Incognia credentials:
                     :region :us)
 ```
 
-### Registering New Signup
+### Incognia API
+
+The implementation is based on the [Incognia API Reference](https://dash.incognia.com/api-reference).
+
+#### Authentication
+
+Authentication is done transparently so you don't need to worry about it.
+
+#### Registering Signup
+
+This method registers a new signup for the given installation (`:installation-id`), returning a risk assessment and supporting evidence (see [Incognia Response Structure](## Incognia Response Structure):
 
 ```lisp
 (incognia:register-signup :installation-id "your-installation-id"
                           :address (incognia:make-address :line "340 Avenue, CA")
 ```
 
-### Getting a Signup
+#### Getting a Signup
+
+This method allows you to query the latest assessment for a given signup event, identified by its `:signup-id`. 
 
 ```lisp
 (incognia:get-signup-assessment :signup-id "your-signup-id")
 ```
 
-### Registering Login
+#### Registering Login
+
+This method registers a new login for the given installation (`:installation-id`) and user account (`:account-id`), returning a risk assessment and the supporting evidence.
 
 ```lisp
 (incognia:register-login :installation-id "your-installation-id"
                          :account-id "your-account-id")
 ```
 
-### Registering Payment
+#### Registering Payment
+
+This method registers a new payment for the given installation (`:installation-id`) and user account (`:account-id`), returning a risk assessment and the supporting evidence.
 
 ```lisp
 (incognia:register-payment :installation-id "your-installation-id"
@@ -68,7 +84,9 @@ Before calling the API methods, you need to configure your Incognia credentials:
                                       (incognia:make-address :line "500 Street, CA" :type :|billing|)))
 ```
 
-### Sending Feedback
+#### Sending Feedback
+
+This method registers a feedback event for the given installation (`:installation-id`) related to a signup, login or payment.
 
 ```lisp
 (incognia:send-feedback :installation-id "your-installation-id"
@@ -81,26 +99,35 @@ Before calling the API methods, you need to configure your Incognia credentials:
 
 ```lisp
 (:|id| "<resource-id>"
+ :|request-id| "<request-id>"
  :|risk_assessment| "low_risk"
  :|evidence|  (:|account_integrity| (:|recent_high_risk_assessment| NIL) 
                :|last_location_ts| "2021-05-24T14:05:58.557Z" 
-               :|distance_to_trusted_location| 50.0744561989637d0
+               :|distance_to_trusted_location| 50.0744
                :|device_behavior_reputation| "unknown" 
                :|device_fraud_reputation| "allowed"
                :|device_integrity| (:|from_official_store| T :|gps_spoofing| NIL :|emulator| NIL :|probable_root| NIL)
                :|location_services| (:|location_sensors_enabled| NIL :|location_permission_enabled| NIL)
                :|known_account| T 
-               :|device_model| "motorola one vision")
+               :|device_model| "iphone-8")
  )
 ```
 
 ## Handling Unexpected HTTP Status Code
 
+// TODO
+
 ## What is Incognia?
 
-Incognia is a location identity platform  
+Incognia is a location identity platform for mobile apps that enables:
+
+- Real-time address verification for onboarding
+- Frictionless authentication
+- Real-time transaction verification
 
 ## Create a Free Incognia Account
+
+1. 
 
 ## License
 
