@@ -1,4 +1,4 @@
-(in-package :incognia-wrapper)
+(in-package :cl-incognia)
 
 ;; Incognia APIs URIs
 (defvar *incognia-br-uri* "https://incognia.inloco.com.br/")

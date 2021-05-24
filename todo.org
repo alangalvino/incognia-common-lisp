@@ -1,7 +1,0 @@
-* To-Do Tasks
-** DONE Refactor config method (load credentials)
-** DONE Refactor util methods
-** DONE Implement call to feedbacks API
-** DONE Write tests for remove null values
-** DONE Write tests for parse-yaml-file
-** DONE Add a github actions test workflow

@@ -1,4 +1,4 @@
-(defsystem "incognia-wrapper"
+(defsystem "cl-incognia"
   :version "0.1.0"
   :author "alan alvino"
   :license "MIT"
@@ -15,13 +15,13 @@
                  (:file "config")
                  (:file "auth")
                  (:file "main"))))
-  :description "Common Lisp Incognia APIs Wrapper"
-  :in-order-to ((test-op (test-op "incognia-wrapper/tests"))))
+  :description "Incognia API Common Lisp Client"
+  :in-order-to ((test-op (test-op "cl-incognia/tests"))))
 
-(defsystem "incognia-wrapper/tests"
+(defsystem "cl-incognia/tests"
   :author "alan alvino"
   :license "MIT"
-  :depends-on (:incognia-wrapper
+  :depends-on (:cl-incognia
                :rove)
   :components ((:module "tests"
                 :serial t
@@ -29,5 +29,5 @@
                 ((:file "package")
                  (:file "utils")
                  (:file "main"))))
-  :description "Test system for incognia-wrapper"
+  :description "Test system for cl-incognia"
   :perform (test-op (op c) (symbol-call :rove :run c)))

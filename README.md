@@ -18,7 +18,7 @@ For now you can install it locally:
 mv cl-incognia ~/common-lisp/
 
 ;; Run load-system
-(asdf:load-system "cl-incognia")
+(asdf:load-system :cl-incognia)
 ```
 
 ## Dependencies
@@ -57,7 +57,7 @@ This method registers a new signup for the given installation (`:installation-id
 
 #### Getting a Signup
 
-This method allows you to query the latest assessment for a given signup event, identified by its `:signup-id` (see [Response Structure](#response-structure)). 
+This method allows you to query the latest assessment for a given signup event, identified by its `:signup-id` (see [Response Structure](#response-structure)).
 
 ```lisp
 (incognia:get-signup-assessment :signup-id "your-signup-id")
@@ -108,14 +108,14 @@ With the exception of [Sending Feedback](#sending-feedback) method that returns 
 (:|id| "<resource-id>"
  :|request-id| "<request-id>"
  :|risk_assessment| "low_risk"
- :|evidence|  (:|account_integrity| (:|recent_high_risk_assessment| NIL) 
-               :|last_location_ts| "2021-05-24T14:05:58.557Z" 
+ :|evidence|  (:|account_integrity| (:|recent_high_risk_assessment| NIL)
+               :|last_location_ts| "2021-05-24T14:05:58.557Z"
                :|distance_to_trusted_location| 50.0744
-               :|device_behavior_reputation| "unknown" 
+               :|device_behavior_reputation| "unknown"
                :|device_fraud_reputation| "allowed"
                :|device_integrity| (:|from_official_store| T :|gps_spoofing| NIL :|emulator| NIL :|probable_root| NIL)
                :|location_services| (:|location_sensors_enabled| NIL :|location_permission_enabled| NIL)
-               :|known_account| T 
+               :|known_account| T
                :|device_model| "iphone-8")
  )
 ```

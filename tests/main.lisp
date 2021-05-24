@@ -1,7 +1,7 @@
-(defpackage incognia-wrapper/tests/main
+(defpackage cl-incognia/tests/main
   (:use :cl
-        :incognia-wrapper
+        :cl-incognia
         :rove))
-(in-package :incognia-wrapper/tests/main)
+(in-package :cl-incognia/tests/main)
 
 ;; NOTE: To run this test file, execute `(asdf:test-system :incognia-wrapper)' in your Lisp.

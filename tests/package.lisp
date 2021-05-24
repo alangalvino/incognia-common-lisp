@@ -1,4 +1,4 @@
-(defpackage incognia-wrapper
+(defpackage cl-incognia
   (:use :cl)
   (:nicknames :incognia)
   (:export

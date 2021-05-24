@@ -1,4 +1,4 @@
-(in-package :incognia-wrapper)
+(in-package :cl-incognia)
 
 (defmacro do-request (&key uri method body basic-auth headers (parse-response t))
   `(let* ((response (dex:request ,uri

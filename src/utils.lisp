@@ -1,4 +1,4 @@
-(in-package :incognia-wrapper)
+(in-package :cl-incognia)
 
 (defun plist-remove-null-values (plist &optional (remove-in-depth t))
   (loop with new-plist = nil

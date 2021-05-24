@@ -1,4 +1,4 @@
-(in-package :incognia-wrapper)
+(in-package :cl-incognia)
 
 (deftype feedback-event-type () '(member
                                   :|signup_accepted|
