@@ -28,6 +28,8 @@
                          :|account_id| account-id))))
 
 (defun get-signup-assessment (&key signup-id)
+  (assert signup-id)
+
   (do-auth-request
     :uri (concatenate 'string  (incognia-uri *signups-uri*) signup-id)
     :method :get))

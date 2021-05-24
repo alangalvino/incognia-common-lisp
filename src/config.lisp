@@ -13,7 +13,7 @@
 (defun region ()
   (getf *api-config* :region))
 
-(defun configure (&key client-id client-secret region)
+(defun configure (&key client-id client-secret (region :us))
   (check-type region region-type)
   (if client-id (setf (getf *api-config* :client-id) client-id))
   (if client-secret (setf (getf *api-config* :client-secret) client-secret))
