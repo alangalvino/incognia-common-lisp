@@ -9,6 +9,7 @@
                 :components
                 ((:file "package")
                  (:file "utils")
+                 (:file "http")
                  (:file "routes")
                  (:file "address")
                  (:file "config")
@@ -27,6 +28,7 @@
                 :components
                 ((:file "package")
                  (:file "utils")
+                 (:file "http")
                  (:file "routes")
                  (:file "address")
                  (:file "config")
