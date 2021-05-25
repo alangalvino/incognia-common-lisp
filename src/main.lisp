@@ -40,9 +40,9 @@
   (let* ((request-body (append
                         (list :|installation_id| installation-id)
                         (and app-id (list :|app_id| app-id))
-                        (and address (addr-line-valid-p address) (addr-line-plist address))
-                        (and address (addr-coordinates-valid-p address) (addr-coordinates-plist address))
-                        (and address (addr-structured-valid-p address) (addr-structured-plist address)))))
+                        (and address (addr-line-validp address) (addr-line-plist address))
+                        (and address (addr-coordinates-validp address) (addr-coordinates-plist address))
+                        (and address (addr-structured-validp address) (addr-structured-plist address)))))
 
     (do-auth-request
       :uri (incognia-uri *signups-uri*)
