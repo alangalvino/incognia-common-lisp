@@ -2,8 +2,12 @@
   (:use :cl)
   (:nicknames :incognia)
   (:export
-           ;; For test only
+           ;; Utils methods for test only
            :plist-remove-null-values
+
+           ;; Address methods for test only
+           :addr-coordinates-validp
+           :addr-line-validp
 
            ;; Public functions
            :configure

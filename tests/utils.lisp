@@ -4,8 +4,6 @@
         :rove))
 (in-package :cl-incognia/tests/utils)
 
-;; NOTE: To run this test file, execute `(asdf:test-system :incognia-wrapper)' in your Lisp.
-
 (deftest test-plist-remove-null-value
   (testing "should remove null values of a simple property list"
     (let* ((plist '(:key-1 1 :key-2 nil :key-3 3)))

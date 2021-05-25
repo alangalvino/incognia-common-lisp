@@ -90,7 +90,7 @@
                  :type type))
 
 (defmethod addr-coordinates-validp ((obj address))
-  (and (typep  (addr-lat obj) 'float) (typep (addr-lng obj) 'float)))
+  (and (typep (addr-lat obj) 'float) (typep (addr-lng obj) 'float)))
 
 (defmethod addr-line-validp ((obj address))
   (addr-line obj))
