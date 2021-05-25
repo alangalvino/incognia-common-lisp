@@ -126,6 +126,10 @@ With the exception of [Sending Feedback](#sending-feedback) method that returns 
 
 // TODO
 
+## How to Contribute
+
+// TODO
+
 ## What is Incognia?
 
 Incognia is a location identity platform for mobile apps that enables:
