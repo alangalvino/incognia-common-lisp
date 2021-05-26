@@ -8,6 +8,16 @@
            ;; Address methods for test only
            :addr-coordinates-validp
            :addr-line-validp
+           :addr-structured-validp
+           :addr-plist
+
+           ;; Config methods for teste only
+           *api-config*
+           incognia-uri
+
+           ;; Auth methods for test only
+           *auth-token*
+           :auth-token-validp
 
            ;; Public functions
            :configure

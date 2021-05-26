@@ -29,6 +29,8 @@
                 ((:file "package")
                  (:file "utils")
                  (:file "address")
+                 (:file "config")
+                 (:file "auth")
                  (:file "main"))))
   :description "Test system for cl-incognia"
   :perform (test-op (op c) (symbol-call :rove :run c)))
