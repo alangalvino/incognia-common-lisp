@@ -1,6 +1,6 @@
 (defsystem "cl-incognia"
-  :version "0.1.0"
-  :author "alan alvino"
+  :version "1.0.0"
+  :author "alangalvino"
   :license "MIT"
   :depends-on (:dexador
                :jonathan)
@@ -20,7 +20,7 @@
   :in-order-to ((test-op (test-op "cl-incognia/tests"))))
 
 (defsystem "cl-incognia/tests"
-  :author "alan alvino"
+  :author "alangalvino"
   :license "MIT"
   :depends-on (:cl-incognia
                :rove)
