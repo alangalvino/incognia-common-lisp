@@ -124,7 +124,14 @@ With the exception of [Sending Feedback](#sending-feedback) method that returns 
 
 ## Handling Unexpected HTTP Status Code
 
-// TODO
+cl-incognia signals a condition `http-request-error` when the server returned 4XX or 5XX status code.
+
+```lisp
+(handler-case (incognia:register-login :installation-id "your-installation-id"
+                                       :account-id "your-account-id")
+  (incognia:http-request-error (e)
+    (format *error-output* "Incognia server returned https status code: ~D" (incognia:response-status e))))
+```
 
 ## How to Contribute
 
