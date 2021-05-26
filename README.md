@@ -135,7 +135,7 @@ cl-incognia signals a condition `http-request-error` when the server returned 4X
 
 ## How to Contribute
 
-// TODO
+If you have found a bug or if you have a feature request, please report them at this repository issues section.
 
 ## What is Incognia?
 
