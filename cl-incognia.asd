@@ -9,6 +9,7 @@
                 :components
                 ((:file "package")
                  (:file "utils")
+                 (:file "error")
                  (:file "http")
                  (:file "routes")
                  (:file "address")

@@ -7,4 +7,11 @@
            :register-signup
            :get-signup-assessment
            :register-payment
-           :register-login))
+           :register-login
+
+           ;; http request error
+           :http-request-error
+           :response-body
+           :response-status
+           :request-uri
+           :request-method))
