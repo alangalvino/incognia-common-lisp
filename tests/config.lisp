@@ -8,7 +8,7 @@
   (testing "should create a config with us region as default"
     (incognia:configure :client-id "client-id"
                         :client-secret "client-secret")
-    (ok (getf *api-config* :region) :us)))
+    (ok (equal (getf *api-config* :region) :us))))
 
 (deftest test-incognia-uri
   (testing "should return US region url"
