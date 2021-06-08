@@ -20,11 +20,11 @@
          response)))
 
 (defmacro do-auth-request (&key uri method body)
-  `(let* ((token (getf (auth-token) :|access_token|)))
+  `(let* ((access-token (getf (auth-token) :|access_token|)))
      (do-request
        :uri ,uri
        :method ,method
        :headers (list
                  '("Content-Type" . "application/json")
-                 (cons "Authorization" (concatenate 'string "Bearer " token)))
+                 (cons "Authorization" (concatenate 'string (token-type) " " access-token)))
        :body ,body)))
