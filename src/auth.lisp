@@ -24,7 +24,7 @@
     :method :post
     :basic-auth (credentials)
     :headers '(("Content-Type" . "application/x-www-form-urlencoded"))
-    :body (to-json '(:|grant_type| "client_credentials"))))
+    :body "grant_type=client_credentials"))
 
 (defun auth-token-validp ()
   (let ((now (get-universal-time)))
