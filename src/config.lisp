@@ -18,7 +18,7 @@
   (if client-id (setf (getf *api-config* :client-id) client-id))
   (if client-secret (setf (getf *api-config* :client-secret) client-secret))
   (if region (setf (getf *api-config* :region) region))
-  (revoke-token))
+  (revoke-auth-token))
 
 (defun credentials ()
   (cons (client-id) (client-secret)))
