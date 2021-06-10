@@ -5,20 +5,10 @@ Common Lisp lightweight client library for [Incognia APIs](https://dash.incognia
 
 ## Installation
 
-In the future you'll be able to install from Quicklisp:
+Incognia API Common Lisp client is available on Quicklisp.
 
 ```
 (ql:quickload :cl-incognia)
-```
-
-For now you can install it locally:
-
-```
-;; Move your repository to ~/common-lisp
-mv cl-incognia ~/common-lisp/
-
-;; Run load-system
-(asdf:load-system :cl-incognia)
 ```
 
 ## Dependencies
