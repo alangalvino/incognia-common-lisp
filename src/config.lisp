@@ -25,8 +25,3 @@
 
 (defun us-regionp ()
   (eq (region) :us))
-
-(defun incognia-uri (resource-uri)
-  (concatenate 'string (if (us-regionp)
-                           *incognia-us-uri*
-                           *incognia-br-uri*) resource-uri))

@@ -31,7 +31,7 @@
   (assert signup-id)
 
   (do-auth-request
-    :uri (concatenate 'string  (incognia-uri *signups-uri*) signup-id)
+    :uri (concatenate 'string  (incognia-uri *signups-uri*) "/" signup-id)
     :method :get))
 
 (defun register-signup (&key installation-id address app-id)
