@@ -34,8 +34,7 @@ Before calling the API methods, you need to configure your Incognia credentials:
 
 ```lisp
 (incognia:configure :client-id "your-client-id"
-                    :client-secret "your-client-secret"
-                    :region :us)
+                    :client-secret "your-client-secret")
 ```
 
 ### Incognia API
