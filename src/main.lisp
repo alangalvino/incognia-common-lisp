@@ -13,7 +13,7 @@
                                   :|login_accepted|
                                   :|login_declined|
                                   :|verified|
-                                  :|not_verified|
+                                  :|identity_fraud|
                                   :|account_takeover|
                                   :|chargeback|
                                   :|mpos_fraud|))
