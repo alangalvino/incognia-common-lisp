@@ -51,10 +51,11 @@
       :method :post
       :body (to-json request-body))))
 
-(defun register-transaction (&key installation-id account-id type app-id external-id addresses payment-value payment-methods)
+(defun register-transaction (&key (eval t) installation-id account-id type app-id external-id addresses payment-value payment-methods)
   (assert (and installation-id account-id type))
 
-  (let* ((request-body (append
+  (let* ((eval-param (if eval "true" "false"))
+         (request-body (append
                         (list :|installation_id| installation-id)
                         (list :|account_id| account-id)
                         (list :|type| type)
@@ -65,18 +66,20 @@
                         (and addresses (mapcar #'addr-plist addresses)))))
 
     (do-auth-request
-      :uri (incognia-uri *transactions-uri*)
+      :uri (concatenate 'string (incognia-uri *transactions-uri*) "?eval=" eval-param)
       :method :post
       :body (to-json request-body))))
 
-(defun register-login (&key installation-id account-id app-id)
-  (register-transaction :installation-id installation-id
+(defun register-login (&key (eval t) installation-id account-id app-id)
+  (register-transaction :eval eval
+                        :installation-id installation-id
                         :account-id account-id
                         :type :|login|
                         :app-id app-id))
 
-(defun register-payment (&key installation-id account-id app-id external-id addresses payment-value payment-methods)
-  (register-transaction :installation-id installation-id
+(defun register-payment (&key (eval t) installation-id account-id app-id external-id addresses payment-value payment-methods)
+  (register-transaction :eval eval
+                        :installation-id installation-id
                         :account-id account-id
                         :external-id external-id
                         :payment-value payment-value
