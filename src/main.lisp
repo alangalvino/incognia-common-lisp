@@ -5,6 +5,7 @@
                                   :|signup_declined|
                                   :|payment_accepted|
                                   :|payment_accepted_by_third_party|
+                                  :|payment_accepted_by_control_group|
                                   :|payment_declined|
                                   :|payment_declined_by_risk_analysis|
                                   :|payment_declined_by_manual_review|
